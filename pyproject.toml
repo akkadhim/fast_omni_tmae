@@ -1,0 +1,150 @@
+[build-system]
+requires = [
+    "setuptools",
+    "wheel",
+    "cffi>=1.15.0",
+    "tomli"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fast_tmae"
+dynamic = ["version"]
+description = "Fast TM-AE"
+readme = "Readme"
+license.text = "MIT License"
+authors = [
+    { email = "ahmed.k.kadhim@uia.no", name = "Ahmed Khalid Kadhim" }
+]
+dependencies = [
+    "cffi>=1.15.0",
+    "numpy",
+    "pandas",
+    "scikit-learn",
+    "tqdm",
+    "requests",
+    "xxhash"
+]
+requires-python = ">=3.10"
+
+[project.optional-dependencies]
+composite = [
+    "opencv-python-headless",
+    "pydantic",
+    "optuna",
+    "joblib"
+]
+
+cuda = [
+    "pycuda"
+]
+
+opencl = [
+    "pyopencl"
+]
+
+examples = [
+    "scikit-learn",
+    "tensorflow"
+]
+
+tests = [
+    "pytest"
+]
+
+
+# Include additional files
+[tool.basedpyright]
+typeCheckingMode = "standard"
+
+[tool.setuptools.package-dir]
+fast_tmae = "fast_tmae"
+
+[tool.setuptools.dynamic]
+version = {attr = "fast_tmae.__version__"}
+
+[tool.cffi_builder]
+module_name = "fast_tmae.host.build.fast_tmaelib"
+flags = [
+    "-O3", "-mrdrnd"
+]
+sources = [
+    "fast_tmae/host/src/ClauseBank.c",
+    "fast_tmae/host/src/Tools.c",
+    "fast_tmae/host/src/random/pcg32_fast.c",
+    "fast_tmae/host/src/random/xorshift128.c",
+]
+
+headers = [
+    "fast_tmae/host/include/ClauseBank.h",
+    "fast_tmae/host/include/Tools.h",
+    "fast_tmae/host/include/fast_rand_seed.h"
+]
+
+include_dir = "fast_tmae/host/include"
+
+[tool.cibuildwheel]
+build = "*"
+test-skip = ""
+skip = [
+    "pp*",
+    "*i686*",
+    #"cp*-manylinux_x86_64",
+    "cp*-manylinux_i686",
+    #"cp*-manylinux_aarch64",
+    "cp*-manylinux_ppc64le",
+    "cp*-manylinux_s390x",
+    "cp*-manylinux_pypy_*_x86_64",
+    "cp*-manylinux_pypy_*_aarch64",    
+    "cp*-win32",
+    #"cp*-win_amd64",
+    "cp*-linux_x86_64",
+    #"cp*-macosx_x86_64",
+    #"cp*-macosx_arm64",
+    "cp*-musllinux_x86_64",
+    "cp*-musllinux_aarch64",
+    "cp*-musllinux_ppc64le",
+    "cp*-musllinux_s390x",
+]
+
+archs = ["auto"]
+build-frontend = "build"
+config-settings = {}
+dependency-versions = "pinned"
+environment = {}
+environment-pass = []
+build-verbosity = ""
+
+before-all = ""
+before-build = "rm -rf build"
+repair-wheel-command = ""
+
+test-command = ""
+before-test = ""
+test-requires = []
+test-extras = []
+
+container-engine = "docker"
+
+manylinux-x86_64-image = "manylinux2014"
+manylinux-aarch64-image = "manylinux2014"
+manylinux-ppc64le-image = "manylinux2014"
+manylinux-s390x-image = "manylinux2014"
+manylinux-pypy_x86_64-image = "manylinux2014"
+manylinux-pypy_aarch64-image = "manylinux2014"
+
+musllinux-x86_64-image = "musllinux_1_1"
+musllinux-aarch64-image = "musllinux_1_1"
+musllinux-ppc64le-image = "musllinux_1_1"
+musllinux-s390x-image = "musllinux_1_1"
+
+
+[tool.cibuildwheel.linux]
+before-all = "yum install -y libffi-devel || (apt-get update && apt-get install -y libffi-dev) || (apk --no-cache add libffi-dev)"
+repair-wheel-command = "auditwheel repair -w {dest_dir} {wheel}"
+
+
+[tool.cibuildwheel.macos]
+repair-wheel-command = "delocate-wheel --require-archs {delocate_archs} -w {dest_dir} -v {wheel}"
+
+[tool.cibuildwheel.windows]

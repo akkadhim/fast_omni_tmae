@@ -1,0 +1,11 @@
+/.vscode
+__pycache__/
+.venv-custom/
+fast_tmae.egg-info/
+build/
+Release/
+mnt/
+fast_tmae/fast_tmaelib.*
+*.so
+big_X.pickle
+results/
