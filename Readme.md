@@ -1,3 +1,5 @@
+This repository contains the work for the paper [FastOmniTMAE: Parallel Clause Learning for Scalable and Hardware-Efficient Tsetlin Embeddings](https://arxiv.org/abs/2605.06982), which presents a new TMAE structure with Omni to build embeddings efficiently.
+
 # 1- Create environment and install Fast TM-AE
 
 ## Basic Installation (CPU-Only)
@@ -89,4 +91,3 @@ python .\scripts\install.py --clear --with-cuda
 | **NVIDIA GTX/RTX** | CUDA | `python .\scripts\install.py --clear --with-cuda` |
 | **Intel Arc GPU** | OpenCL | `python .\scripts\install.py --clear --with-opencl` |
 | **No GPU (CPU only)** | - | `python .\scripts\install.py --clear` |
-
